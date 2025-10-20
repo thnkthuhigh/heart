@@ -46,7 +46,7 @@ async function connectDB() {
   if (isConnected) return;
   try {
     const db = await mongoose.connect(uri);
-    isConnected = db.connections[0].readyState;
+    isConnected = db.connections[0].readyState === 1;
     console.log("✅ MongoDB connected (cached)");
   } catch (err) {
     console.error("❌ MongoDB error:", err);
@@ -75,4 +75,10 @@ app.post("/api/messages", async (req, res) => {
 
 app.get("/", (req, res) => res.send("❤️ Server đang hoạt động!"));
 
-module.exports = app;
+// If run directly, start the Express server for local development
+if (require.main === module) {
+  const port = process.env.PORT || 3000;
+  app.listen(port, () => console.log(`Server listening on port ${port}`));
+} else {
+  module.exports = app;
+}
