@@ -428,7 +428,7 @@
         if (!msg) return showPopup("💌 Em chưa viết gì cả 💕");
 
         try {
-          await fetch("/api/messages", {
+          await fetch("https://heart-hsvb.onrender.com/api/messages", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ message: msg }),
