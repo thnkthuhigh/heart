@@ -1,9 +1,3 @@
-// Load local .env if available (safe require so it won't crash if dotenv isn't installed)
-try {
-  require("dotenv").config();
-} catch (e) {
-  /* dotenv not installed, ignore */
-}
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -12,49 +6,24 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Prefer a valid environment-provided URI. If it's missing or looks like a placeholder,
-// fall back to the default. Trim to avoid stray whitespace/newlines.
-const rawEnvUri = (process.env.MONGODB_URI || "").trim();
-const fallbackUri =
+// ✅ Kết nối MongoDB (Render cho phép connect trực tiếp)
+const uri =
+  process.env.MONGODB_URI ||
   "mongodb+srv://thanhthanhne:thanhthanhne@cluster0.ib0nvnk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-function isValidMongoUri(u) {
-  return (
-    typeof u === "string" &&
-    /^mongodb(?:\+srv)?:\/\/.+/.test(u) &&
-    !/^your_?/.test(u)
-  );
-}
-let uri;
-if (isValidMongoUri(rawEnvUri)) {
-  uri = rawEnvUri;
-  console.log("Using MONGODB_URI from environment");
-} else {
-  if (rawEnvUri) {
-    console.warn(
-      "⚠️ Ignoring invalid MONGODB_URI in environment. Using fallback connection string."
-    );
-  } else {
-    console.warn("⚠️ MONGODB_URI not set. Using fallback connection string.");
-  }
-  uri = fallbackUri;
-}
 
-// 🔥 Tạo kết nối cache để tránh reconnect nhiều lần (Vercel cần dòng này)
 let isConnected = false;
-
 async function connectDB() {
   if (isConnected) return;
   try {
     const db = await mongoose.connect(uri);
-    isConnected = db.connections[0].readyState === 1;
-    console.log("✅ MongoDB connected (cached)");
+    isConnected = db.connections[0].readyState;
+    console.log("✅ MongoDB connected");
   } catch (err) {
     console.error("❌ MongoDB error:", err);
   }
 }
 connectDB();
 
-// Schema & API
 const MessageSchema = new mongoose.Schema({
   message: String,
   createdAt: { type: Date, default: Date.now },
@@ -64,7 +33,7 @@ const Message =
 
 app.post("/api/messages", async (req, res) => {
   try {
-    await connectDB(); // đảm bảo mỗi request có DB
+    await connectDB();
     const msg = new Message({ message: req.body.message });
     await msg.save();
     res.json({ success: true, msg: "💖 Tin nhắn đã lưu" });
@@ -75,10 +44,5 @@ app.post("/api/messages", async (req, res) => {
 
 app.get("/", (req, res) => res.send("❤️ Server đang hoạt động!"));
 
-// If run directly, start the Express server for local development
-if (require.main === module) {
-  const port = process.env.PORT || 3000;
-  app.listen(port, () => console.log(`Server listening on port ${port}`));
-} else {
-  module.exports = app;
-}
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
