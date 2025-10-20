@@ -6,8 +6,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const uri =
+  process.env.MONGODB_URI ||
+  "mongodb+srv://thanhthanhne:thanhthanhne@cluster0.ib0nvnk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+
 mongoose
-  .connect(process.env.MONGODB_URI)
+  .connect(uri)
   .then(() => console.log("✅ MongoDB connected"))
   .catch((err) => console.error("❌ MongoDB error:", err));
 
@@ -30,4 +34,5 @@ app.post("/api/messages", async (req, res) => {
 
 app.get("/", (req, res) => res.send("❤️ Server đang hoạt động!"));
 
-module.exports = app; // ✅ Bắt buộc có dòng này
+module.exports = app; // ⚡ Quan trọng nhất
+// Nếu chạy trực tiếp, khởi động server
