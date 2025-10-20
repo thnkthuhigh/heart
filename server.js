@@ -7,9 +7,7 @@ app.use(cors());
 app.use(express.json());
 
 mongoose
-  .connect(
-    "mongodb+srv://thanhthanhne:thanhthanhne@cluster0.ib0nvnk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-  )
+  .connect(process.env.MONGODB_URI)
   .then(() => console.log("✅ MongoDB connected"))
   .catch((err) => console.error("❌ MongoDB error:", err));
 
@@ -32,5 +30,4 @@ app.post("/api/messages", async (req, res) => {
 
 app.get("/", (req, res) => res.send("❤️ Server đang hoạt động!"));
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Server running on ${PORT}`));
+module.exports = app; // ✅ Bắt buộc có dòng này
