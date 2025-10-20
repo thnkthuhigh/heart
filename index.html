@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LoveForEm_2025 - Nhập mã</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        margin: 0;
+        background: radial-gradient(circle at center, #ffe6f0, #ffcce0);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      .password-box {
+        background: white;
+        padding: 25px 30px;
+        border-radius: 20px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        text-align: center;
+        animation: fadeIn 0.8s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h2 {
+        color: #ff5f87;
+        margin-bottom: 15px;
+      }
+
+      .display {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 15px;
+      }
+
+      .digit {
+        width: 35px;
+        height: 45px;
+        border-radius: 10px;
+        border: 2px solid #ff9bb3;
+        text-align: center;
+        font-size: 24px;
+        color: #ff5f87;
+        line-height: 40px;
+        background-color: #fff7fa;
+      }
+
+      .keyboard {
+        display: grid;
+        grid-template-columns: repeat(3, 60px);
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .key {
+        background-color: #ff8fab;
+        color: white;
+        font-size: 20px;
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+
+      .key:hover {
+        background-color: #ff6f91;
+        transform: scale(1.05);
+      }
+
+      .key.clear {
+        background-color: #ffd6e0;
+        color: #ff5f87;
+      }
+      .popup {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 200, 220, 0.6);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+      }
+
+      .popup-content {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(255, 100, 150, 0.3);
+        padding: 25px 30px;
+        text-align: center;
+        animation: popIn 0.4s ease;
+      }
+
+      .popup-content p {
+        color: #ff4f87;
+        font-weight: 500;
+        margin-bottom: 15px;
+      }
+
+      .popup-content button {
+        background: linear-gradient(145deg, #ff8fab, #ff6f91);
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      .popup-content button:hover {
+        background: #ff6f91;
+        transform: scale(1.05);
+      }
+
+      @keyframes popIn {
+        from {
+          transform: scale(0.9);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- 🔔 Popup -->
+    <div id="errorPopup" class="popup">
+      <div class="popup-content">
+        <p id="popupText"></p>
+        <button onclick="closePopup()">Thử lại</button>
+      </div>
+    </div>
+
+    <div class="password-box">
+      <h2>🔒 Nhập mật mã 4 số</h2>
+      <div class="display">
+        <div class="digit"></div>
+        <div class="digit"></div>
+        <div class="digit"></div>
+        <div class="digit"></div>
+      </div>
+      <div class="keyboard">
+        <button class="key" onclick="pressKey('1')">1</button>
+        <button class="key" onclick="pressKey('2')">2</button>
+        <button class="key" onclick="pressKey('3')">3</button>
+        <button class="key" onclick="pressKey('4')">4</button>
+        <button class="key" onclick="pressKey('5')">5</button>
+        <button class="key" onclick="pressKey('6')">6</button>
+        <button class="key" onclick="pressKey('7')">7</button>
+        <button class="key" onclick="pressKey('8')">8</button>
+        <button class="key" onclick="pressKey('9')">9</button>
+        <button class="key clear" onclick="clearInput()">⌫</button>
+        <button class="key" onclick="pressKey('0')">0</button>
+        <button class="key" onclick="submitCode()">✔</button>
+      </div>
+    </div>
+
+    <script>
+      const correctCode = "1804";
+      let inputCode = "";
+      const digits = document.querySelectorAll(".digit");
+
+      function pressKey(num) {
+        if (inputCode.length < 4) {
+          inputCode += num;
+          digits[inputCode.length - 1].textContent = "•";
+        }
+      }
+
+      function clearInput() {
+        inputCode = inputCode.slice(0, -1);
+        digits.forEach(
+          (d, i) => (d.textContent = i < inputCode.length ? "•" : "")
+        );
+      }
+
+      function submitCode() {
+        if (inputCode === correctCode) {
+          window.location.href = "t.html";
+        } else {
+          inputCode = "";
+          digits.forEach((d) => (d.textContent = ""));
+          showErrorPopup("💌 Anh và em 💕  Thử lại nha vợ yêu!");
+        }
+      }
+
+      function showErrorPopup(text) {
+        const popup = document.getElementById("errorPopup");
+        const popupText = document.getElementById("popupText");
+        popupText.textContent = text;
+        popup.style.display = "flex";
+      }
+
+      function closePopup() {
+        document.getElementById("errorPopup").style.display = "none";
+      }
+    </script>
+  </body>
+</html>

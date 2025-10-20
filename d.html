@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LoveForEm_2025 💖</title>
+    <script
+      type="module"
+      src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"
+    ></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Great+Vibes&display=swap");
+
+      body {
+        margin: 0;
+        background: radial-gradient(circle at center, #ffe6f0, #ffcce0);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        height: 100vh;
+        overflow: hidden;
+        font-family: "Poppins", sans-serif;
+      }
+
+      model-viewer {
+        width: 100%;
+        height: 75vh;
+        --poster-color: transparent;
+      }
+
+      /* 🎵 Mini player */
+      .music-box {
+        position: absolute;
+        top: 15px;
+        left: 10px;
+        background-color: rgba(255, 240, 245, 0.95);
+        border-radius: 40px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 6px 15px 6px 10px;
+        box-shadow: 0 4px 12px rgba(255, 105, 135, 0.3);
+        z-index: 5;
+      }
+
+      .music-btn {
+        background: linear-gradient(145deg, #ff8fab, #ff6f91);
+        border: none;
+        border-radius: 50%;
+        width: 45px;
+        height: 45px;
+        color: white;
+        font-size: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      .song-name {
+        font-size: 14px;
+        color: #ff4f87;
+        font-weight: 500;
+        overflow: hidden;
+        white-space: nowrap;
+        max-width: 160px;
+      }
+
+      .song-name span {
+        display: inline-block;
+        animation: slide 10s linear infinite;
+      }
+
+      @keyframes slide {
+        from {
+          transform: translateX(100%);
+        }
+        to {
+          transform: translateX(-100%);
+        }
+      }
+
+      /* Buttons */
+      .buttons {
+        position: absolute;
+        bottom: 25px;
+        display: flex;
+        gap: 15px;
+        z-index: 3;
+      }
+
+      button {
+        background-color: #ff8fab;
+        border: none;
+        border-radius: 30px;
+        color: white;
+        font-size: 15px;
+        font-weight: 500;
+        padding: 10px 22px;
+        cursor: pointer;
+        box-shadow: 0 4px 8px rgba(255, 105, 135, 0.4);
+        transition: all 0.3s ease;
+      }
+
+      button:hover {
+        background-color: #ff6f91;
+        transform: translateY(-3px);
+      }
+
+      /* Thư */
+      .letter-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 204, 224, 0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.6s ease;
+        z-index: 10;
+      }
+
+      .letter-overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .letter-paper {
+        background: linear-gradient(180deg, #fff0f5, #ffe6ef);
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(255, 105, 135, 0.3);
+        padding: 25px;
+        width: 90%;
+        max-width: 400px;
+        font-size: 16px;
+        color: #333;
+        line-height: 1.6;
+        text-align: justify;
+        transform: translateY(50px);
+        opacity: 0;
+        transition: all 1s ease;
+      }
+
+      .letter-paper.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      .letter-header {
+        font-size: 18px;
+        font-weight: 600;
+        text-align: center;
+        color: #ff5f87;
+        margin-bottom: 15px;
+      }
+
+      /* Album */
+      .album {
+        display: none;
+        position: fixed;
+        top: 10%;
+        left: 0;
+        width: 100%;
+        height: 80%;
+        background: rgba(255, 240, 245, 0.95);
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        z-index: 20;
+      }
+
+      .album img {
+        width: 90%;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(255, 105, 135, 0.3);
+      }
+
+      /* Box lời nhắn */
+      .message-box {
+        display: none;
+        position: fixed;
+        top: 35%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 5px 15px rgba(255, 105, 135, 0.3);
+        width: 85%;
+        max-width: 400px;
+        text-align: center;
+        z-index: 30;
+      }
+
+      input {
+        width: 90%;
+        border: 1px solid #ffb6c1;
+        border-radius: 10px;
+        padding: 10px;
+        outline: none;
+        margin-top: 10px;
+      }
+
+      /* 💖 Dòng chữ cuối */
+      #finalText {
+        position: absolute;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+        color: #ff5f87;
+        font-family: "Great Vibes", cursive;
+        font-size: 28px;
+        font-weight: 500;
+        display: none;
+        text-shadow: 0 0 15px rgba(255, 100, 150, 0.5);
+        animation: glow 3s ease-in-out infinite;
+      }
+
+      @keyframes glow {
+        0%,
+        100% {
+          text-shadow: 0 0 10px #ff6fa5, 0 0 20px #ff9ac6, 0 0 30px #ffd4e8;
+        }
+        50% {
+          text-shadow: 0 0 15px #ff4f87, 0 0 25px #ff7ea8, 0 0 35px #ffb6d5;
+        }
+      }
+
+      @media (max-width: 480px) {
+        #finalText {
+          bottom: 20px;
+          font-size: 24px;
+        }
+        .message-box {
+          top: 30%;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- 🎵 Player -->
+    <div class="music-box">
+      <button class="music-btn" id="musicBtn">🎵</button>
+      <div class="song-name">
+        <span>Đang phát: Em - Nhẹ nhàng như gió qua tim 💖</span>
+      </div>
+    </div>
+
+    <audio id="bgMusic" src="em.mp3" loop></audio>
+
+    <model-viewer
+      src="thao_traitim.glb"
+      autoplay
+      camera-controls
+      auto-rotate
+    ></model-viewer>
+
+    <div class="buttons">
+      <button id="btnRead">💌 Đọc thư gửi em</button>
+      <button id="btnAlbum" style="display: none">
+        📸 Kỷ niệm của chúng ta
+      </button>
+    </div>
+
+    <!-- 💌 Thư -->
+    <div class="letter-overlay" id="letterOverlay">
+      <div class="letter-paper" id="letterPaper">
+        <div class="letter-header">💌 Gửi đến em, Ngọc Thảo 💕</div>
+        <p>
+          Có thể em không biết, nhưng mỗi lần anh nhìn thấy em, trái tim anh lại
+          đập nhanh hơn một nhịp.
+        </p>
+        <p>
+          Anh tạo ra trang web này chỉ để nói rằng —
+          <b>Em chính là điều ngọt ngào nhất mà anh từng có 💖</b>
+        </p>
+        <p>
+          Chúc em luôn vui vẻ, và hãy nhớ rằng —
+          <b>Anh luôn ở đây, yêu thương em mãi mãi 💞</b>
+        </p>
+        <button class="close-btn" onclick="nextToAlbum()">Đóng thư</button>
+      </div>
+    </div>
+
+    <!-- 📸 Album -->
+    <div class="album" id="album">
+      <img id="albumImg" src="img1.jpg" alt="Kỷ niệm" />
+    </div>
+
+    <!-- 💬 Nhắn gửi -->
+    <div class="message-box" id="messageBox">
+      <p>💬 Em có muốn gửi gì đến anh không?</p>
+      <input id="messageInput" placeholder="Viết điều em muốn nói..." />
+      <button onclick="sendMessage()">Gửi</button>
+    </div>
+
+    <!-- 💖 Lời cuối -->
+    <div id="finalText">💖 Anh yêu em 💖</div>
+
+    <script>
+      const musicBtn = document.getElementById("musicBtn");
+      const bgMusic = document.getElementById("bgMusic");
+      const btnRead = document.getElementById("btnRead");
+      const btnAlbum = document.getElementById("btnAlbum");
+      const letterOverlay = document.getElementById("letterOverlay");
+      const letterPaper = document.getElementById("letterPaper");
+      const album = document.getElementById("album");
+      const albumImg = document.getElementById("albumImg");
+      const messageBox = document.getElementById("messageBox");
+      const finalText = document.getElementById("finalText");
+
+      let musicPlaying = false;
+      let currentImg = 1;
+
+      // 🔊 Music
+      musicBtn.addEventListener("click", () => {
+        musicPlaying = !musicPlaying;
+        if (musicPlaying) {
+          bgMusic.play();
+          musicBtn.textContent = "⏸️";
+        } else {
+          bgMusic.pause();
+          musicBtn.textContent = "🎵";
+        }
+      });
+
+      // 💌 Đọc thư
+      btnRead.onclick = () => {
+        letterOverlay.classList.add("active");
+        setTimeout(() => {
+          letterPaper.classList.add("show");
+          bgMusic.play();
+          musicPlaying = true;
+          musicBtn.textContent = "⏸️";
+        }, 300);
+      };
+
+      // 📸 Sau khi đọc
+      function nextToAlbum() {
+        letterOverlay.classList.remove("active");
+        btnRead.style.display = "none";
+        setTimeout(() => {
+          btnAlbum.style.display = "block";
+        }, 800);
+      }
+
+      // Album
+      btnAlbum.onclick = () => {
+        album.style.display = "flex";
+        albumImg.src = "img1.jpg";
+        currentImg = 1;
+        document.body.addEventListener("touchstart", swipeHandler, false);
+      };
+
+      function swipeHandler() {
+        currentImg++;
+        if (currentImg > 3) {
+          album.style.display = "none";
+          messageBox.style.display = "block";
+          document.body.removeEventListener("touchstart", swipeHandler, false);
+        } else {
+          albumImg.src = `img${currentImg}.jpg`;
+        }
+      }
+
+      // 💬 Gửi lời nhắn
+      function sendMessage() {
+        const msg = document.getElementById("messageInput").value.trim();
+        console.log("💌 Lời nhắn của người ấy:", msg);
+        messageBox.style.display = "none";
+        finalText.style.display = "block";
+        btnAlbum.style.display = "none";
+      }
+    </script>
+  </body>
+</html>
