@@ -1,8 +1,35 @@
+// Load local .env if available
+try {
+  require("dotenv").config();
+} catch (e) {
+  /* ignore */
+}
 const mongoose = require("mongoose");
 
-const uri =
-  process.env.MONGODB_URI ||
+const rawEnvUri = (process.env.MONGODB_URI || "").trim();
+const fallbackUri =
   "mongodb+srv://thanhthanhne:thanhthanhne@cluster0.ib0nvnk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+function isValidMongoUri(u) {
+  return (
+    typeof u === "string" &&
+    /^mongodb(?:\+srv)?:\/\/.+/.test(u) &&
+    !/^your_?/.test(u)
+  );
+}
+let uri;
+if (isValidMongoUri(rawEnvUri)) {
+  uri = rawEnvUri;
+  console.log("Using MONGODB_URI from environment");
+} else {
+  if (rawEnvUri) {
+    console.warn(
+      "⚠️ Ignoring invalid MONGODB_URI in environment. Using fallback connection string."
+    );
+  } else {
+    console.warn("⚠️ MONGODB_URI not set. Using fallback connection string.");
+  }
+  uri = fallbackUri;
+}
 
 let isConnected = false;
 
